@@ -2,7 +2,9 @@
 
 import { useAuth } from "@/contexts/AuthContext";
 import { Toaster } from "react-hot-toast";
-import Sidebar from "@/components/layout/Sidebar";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import { AppSidebar } from "@/components/layout/AppSideBar";
+import { SiteHeader } from "@/components/layout/SiteHeader";
 
 export default function DashboardLayout({
   children,
@@ -16,14 +18,13 @@ export default function DashboardLayout({
   }
 
   return (
-    <div className="flex h-screen bg-gray-100">
-      <Sidebar />
-
-      <div className="flex-1 ml-64 overflow-auto">
-        <main className="p-6">{children}</main>
-      </div>
-
-      <Toaster position="top-right" />
-    </div>
+    <SidebarProvider>
+      <AppSidebar variant="inset" />
+      <SidebarInset>
+        <SiteHeader />
+        <main className="p-4">{children}</main>
+        <Toaster position="top-right" />
+      </SidebarInset>
+    </SidebarProvider>
   );
 }

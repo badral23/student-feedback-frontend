@@ -28,6 +28,6 @@ export const config = {
     "/dashboard/:path*",
     "/profile/:path*",
     // Exclude paths that don't need authentication
-    "/((?!api|_next/static|_next/image|favicon.ico|login|register).*)",
+    // "/((?!api|_next/static|_next/image|favicon.ico|login|register).*)",
   ],
 };

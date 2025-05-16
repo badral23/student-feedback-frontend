@@ -1,0 +1,144 @@
+"use client";
+
+import * as React from "react";
+import {
+  ArrowUpCircleIcon,
+  ChartBarStacked,
+  ClipboardListIcon,
+  DatabaseIcon,
+  FileIcon,
+  Flame,
+  HelpCircleIcon,
+  LayoutDashboardIcon,
+  MessageSquareText,
+  SearchIcon,
+  SettingsIcon,
+  UserRoundPen,
+  UsersRound,
+} from "lucide-react";
+
+import { NavDocuments } from "@/components/layout/NavDocuments";
+import { NavMain } from "@/components/layout/NavMain";
+import { NavSecondary } from "@/components/layout/NavSecondary";
+import { NavUser } from "@/components/layout/NavUser";
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+} from "@/components/ui/sidebar";
+import { useAuth } from "@/contexts/AuthContext";
+
+export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const { user } = useAuth();
+
+  console.log("user", user);
+
+  const data = {
+    user: {
+      name: `${user?.username ?? ""}`,
+      email: `${user?.email ?? ""}`,
+      avatar: "/avatars/shadcn.jpg",
+    },
+    navMain: [
+      {
+        title: "Dashboard",
+        url: "#",
+        icon: LayoutDashboardIcon,
+        show: true,
+      },
+      {
+        title: "Feedback",
+        url: "/feedback",
+        icon: MessageSquareText,
+        show: true,
+      },
+      { title: "Profile", url: "/profile", icon: UserRoundPen, show: true },
+      {
+        title: "Departments",
+        url: "/admin/departments",
+        icon: Flame,
+        show: user?.role === "admin",
+      },
+      {
+        title: "Categories",
+        url: "/admin/categories",
+        icon: ChartBarStacked,
+        show: user?.role === "admin",
+      },
+      {
+        title: "Users",
+        url: "/admin/users",
+        icon: UsersRound,
+        show: user?.role === "admin",
+      },
+    ],
+
+    // navSecondary: [
+    //   {
+    //     title: "Settings",
+    //     url: "#",
+    //     icon: SettingsIcon,
+    //   },
+    //   {
+    //     title: "Get Help",
+    //     url: "#",
+    //     icon: HelpCircleIcon,
+    //   },
+    //   {
+    //     title: "Search",
+    //     url: "#",
+    //     icon: SearchIcon,
+    //   },
+    // ],
+    // documents: [
+    //   {
+    //     name: "Data Library",
+    //     url: "#",
+    //     icon: DatabaseIcon,
+    //   },
+    //   {
+    //     name: "Reports",
+    //     url: "#",
+    //     icon: ClipboardListIcon,
+    //   },
+    //   {
+    //     name: "Word Assistant",
+    //     url: "#",
+    //     icon: FileIcon,
+    //   },
+    // ],
+  };
+  return (
+    <Sidebar collapsible="offcanvas" {...props}>
+      <SidebarHeader>
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              asChild
+              className="data-[slot=sidebar-menu-button]:!p-1.5"
+            >
+              <a href="#">
+                <ArrowUpCircleIcon className="h-5 w-5" />
+                <span className="text-base font-semibold">
+                  Student Feedback
+                </span>
+              </a>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarHeader>
+      <SidebarContent>
+        <NavMain items={data.navMain} />
+        {/* <NavDocuments items={data.documents} />
+        <NavSecondary items={data.navSecondary} className="mt-auto" /> */}
+      </SidebarContent>
+      <SidebarFooter>
+        <NavUser user={data.user} />
+      </SidebarFooter>
+    </Sidebar>
+  );
+}
