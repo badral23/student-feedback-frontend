@@ -6,10 +6,13 @@ import { useForm } from "react-hook-form";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "react-hot-toast";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
   const { login } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
+
+  const router = useRouter();
   const {
     register,
     handleSubmit,
@@ -21,6 +24,7 @@ export default function LoginPage() {
     try {
       await login(data.username, data.password);
       toast.success("Login successful!");
+      router.push("/dashboard");
     } catch (error) {
       console.error(error);
       toast.error("Invalid username or password");

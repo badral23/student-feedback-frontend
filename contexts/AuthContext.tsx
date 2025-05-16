@@ -1,6 +1,6 @@
-// contexts/AuthContext.tsx
 "use client";
-import React, { createContext, useContext, useEffect, useState } from "react";
+import type React from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
@@ -20,6 +20,28 @@ type AuthContextType = {
   isLoading: boolean;
 };
 
+// Cookie helper functions
+const setCookie = (name: string, value: string, days: number) => {
+  const expires = new Date();
+  expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000);
+  document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/;SameSite=Lax`;
+};
+
+const getCookie = (name: string): string | null => {
+  const nameEQ = name + "=";
+  const ca = document.cookie.split(";");
+  for (let i = 0; i < ca.length; i++) {
+    let c = ca[i];
+    while (c.charAt(0) === " ") c = c.substring(1, c.length);
+    if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+  }
+  return null;
+};
+
+const removeCookie = (name: string) => {
+  document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/`;
+};
+
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
@@ -32,7 +54,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   useEffect(() => {
     // Check for saved token on mount
-    const savedToken = localStorage.getItem("token");
+    const savedToken = getCookie("token");
     if (savedToken) {
       try {
         const decoded = jwtDecode<{
@@ -44,7 +66,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
         // Check if token is expired
         if (decoded.exp * 1000 < Date.now()) {
-          localStorage.removeItem("token");
+          removeCookie("token");
           setToken(null);
           setUser(null);
         } else {
@@ -59,13 +81,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
               setUser(response.data);
             })
             .catch(() => {
-              localStorage.removeItem("token");
+              removeCookie("token");
               setToken(null);
               setUser(null);
             });
         }
       } catch (error) {
-        localStorage.removeItem("token");
+        removeCookie("token");
         setToken(null);
         setUser(null);
       }
@@ -85,7 +107,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       );
 
       const { access_token, user } = response.data;
-      localStorage.setItem("token", access_token);
+
+      // Get token expiration from decoded JWT
+      const decoded = jwtDecode<{ exp: number }>(access_token);
+      const expiresIn = decoded.exp * 1000 - Date.now();
+      const daysTillExpiry = Math.floor(expiresIn / (1000 * 60 * 60 * 24));
+
+      // Set cookie with appropriate expiration (default to 7 days if can't determine)
+      setCookie("token", access_token, daysTillExpiry > 0 ? daysTillExpiry : 7);
+
       setToken(access_token);
       setUser(user);
       router.push("/dashboard");
@@ -97,7 +127,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   const logout = () => {
-    localStorage.removeItem("token");
+    removeCookie("token");
     setToken(null);
     setUser(null);
     router.push("/login");
