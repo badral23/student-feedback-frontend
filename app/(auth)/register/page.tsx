@@ -1,4 +1,3 @@
-// app/(auth)/register/page.tsx
 "use client";
 
 import { useState } from "react";
@@ -25,6 +24,8 @@ export default function RegisterPage() {
         email: data.email,
         password: data.password,
         role: "student", // Default role for registration
+        department: data.department,
+        studentId: data.studentId,
       });
 
       toast.success("Registration successful! Please log in.");
@@ -113,6 +114,49 @@ export default function RegisterPage() {
             {errors.password && (
               <p className="mt-1 text-sm text-red-600">
                 {errors.password.message as string}
+              </p>
+            )}
+          </div>
+
+          {/* New fields: Department and Student ID */}
+          <div>
+            <label
+              htmlFor="department"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Department
+            </label>
+            <input
+              id="department"
+              type="text"
+              {...register("department", {
+                required: "Department is required",
+              })}
+              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+            />
+            {errors.department && (
+              <p className="mt-1 text-sm text-red-600">
+                {errors.department.message as string}
+              </p>
+            )}
+          </div>
+
+          <div>
+            <label
+              htmlFor="studentId"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Student ID
+            </label>
+            <input
+              id="studentId"
+              type="text"
+              {...register("studentId", { required: "Student ID is required" })}
+              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+            />
+            {errors.studentId && (
+              <p className="mt-1 text-sm text-red-600">
+                {errors.studentId.message as string}
               </p>
             )}
           </div>
