@@ -1,5 +1,6 @@
 "use client";
 
+import FeedbackListPage from "@/components/feedback/FeedbackList";
 import { useAuth } from "@/contexts/AuthContext";
 import { feedbackAPI } from "@/lib/api";
 import { useEffect, useState } from "react";
@@ -15,7 +16,7 @@ export default function Dashboard() {
     const fetchData = async () => {
       try {
         // For admins and teachers, fetch statistics
-        if (user?.role === "admin" || user?.role === "teacher") {
+        if (user?.role === "admin" || user?.role === "moderator") {
           const statsResponse = await feedbackAPI.getStatistics();
           setStatistics(statsResponse.data);
         }
@@ -58,42 +59,44 @@ export default function Dashboard() {
   return (
     <div className="flex flex-1 flex-col">
       <div className="@container/main flex flex-1 flex-col gap-2">
-        {(user?.role === "admin" || user?.role === "teacher") && statistics && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-            <div className="bg-white rounded-lg shadow p-4">
-              <h2 className="text-sm font-medium text-gray-500">
-                Total Feedback
-              </h2>
-              <p className="text-3xl font-bold">{statistics.totalFeedback}</p>
+        {/* <FeedbackListPage /> */}
+        {(user?.role === "admin" || user?.role === "moderator") &&
+          statistics && (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+              <div className="bg-white rounded-lg shadow p-4">
+                <h2 className="text-sm font-medium text-gray-500">
+                  Total Feedback
+                </h2>
+                <p className="text-3xl font-bold">{statistics.totalFeedback}</p>
+              </div>
+              <div className="bg-white rounded-lg shadow p-4">
+                <h2 className="text-sm font-medium text-gray-500">
+                  Unresolved Issues
+                </h2>
+                <p className="text-3xl font-bold">
+                  {statistics.unresolvedFeedback}
+                </p>
+              </div>
+              <div className="bg-white rounded-lg shadow p-4">
+                <h2 className="text-sm font-medium text-gray-500">
+                  High Priority
+                </h2>
+                <p className="text-3xl font-bold">
+                  {statistics.priorityCounts?.find(
+                    (p: any) => p.priority === "high"
+                  )?.count || 0}
+                </p>
+              </div>
+              <div className="bg-white rounded-lg shadow p-4">
+                <h2 className="text-sm font-medium text-gray-500">Resolved</h2>
+                <p className="text-3xl font-bold">
+                  {statistics.statusCounts?.find(
+                    (s: any) => s.status === "resolved"
+                  )?.count || 0}
+                </p>
+              </div>
             </div>
-            <div className="bg-white rounded-lg shadow p-4">
-              <h2 className="text-sm font-medium text-gray-500">
-                Unresolved Issues
-              </h2>
-              <p className="text-3xl font-bold">
-                {statistics.unresolvedFeedback}
-              </p>
-            </div>
-            <div className="bg-white rounded-lg shadow p-4">
-              <h2 className="text-sm font-medium text-gray-500">
-                High Priority
-              </h2>
-              <p className="text-3xl font-bold">
-                {statistics.priorityCounts?.find(
-                  (p: any) => p.priority === "high"
-                )?.count || 0}
-              </p>
-            </div>
-            <div className="bg-white rounded-lg shadow p-4">
-              <h2 className="text-sm font-medium text-gray-500">Resolved</h2>
-              <p className="text-3xl font-bold">
-                {statistics.statusCounts?.find(
-                  (s: any) => s.status === "resolved"
-                )?.count || 0}
-              </p>
-            </div>
-          </div>
-        )}
+          )}
 
         <div className="bg-white rounded-lg shadow">
           <div className="px-4 py-5 border-b border-gray-200">

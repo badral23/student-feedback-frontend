@@ -41,12 +41,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     user: {
       name: `${user?.username ?? ""}`,
       email: `${user?.email ?? ""}`,
-      avatar: "/avatars/shadcn.jpg",
     },
     navMain: [
       {
         title: "Dashboard",
-        url: "#",
+        url: "/dashboard",
         icon: LayoutDashboardIcon,
         show: true,
       },
@@ -67,7 +66,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         title: "Categories",
         url: "/admin/categories",
         icon: ChartBarStacked,
-        show: user?.role === "admin",
+        show: user?.role === "moderator",
       },
       {
         title: "Users",

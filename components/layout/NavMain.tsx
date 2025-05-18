@@ -10,6 +10,8 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import Link from "next/link";
+import StudentFeedbackDialog from "../feedback/FeedbackDialog";
 
 export function NavMain({
   items,
@@ -33,6 +35,7 @@ export function NavMain({
               <PlusCircleIcon />
               <span>Quick Create</span>
             </SidebarMenuButton>
+            <StudentFeedbackDialog />
             <Button
               size="icon"
               className="h-9 w-9 shrink-0 group-data-[collapsible=icon]:opacity-0"
@@ -48,10 +51,12 @@ export function NavMain({
             (item) =>
               item.show && (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton tooltip={item.title}>
-                    {item.icon && <item.icon />}
-                    <span>{item.title}</span>
-                  </SidebarMenuButton>
+                  <Link href={item.url}>
+                    <SidebarMenuButton tooltip={item.title}>
+                      {item.icon && <item.icon />}
+                      <span>{item.title}</span>
+                    </SidebarMenuButton>
+                  </Link>
                 </SidebarMenuItem>
               )
           )}

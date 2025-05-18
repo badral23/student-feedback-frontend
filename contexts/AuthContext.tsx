@@ -9,7 +9,7 @@ type User = {
   id: string;
   username: string;
   email: string;
-  role: "student" | "teacher" | "admin";
+  role: "student" | "moderator" | "admin";
 };
 
 type AuthContextType = {
@@ -95,13 +95,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     setIsLoading(false);
   }, []);
 
-  const login = async (username: string, password: string) => {
+  const login = async (email: string, password: string) => {
     setIsLoading(true);
     try {
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_API_URL}/auth/login`,
         {
-          username,
+          email,
           password,
         }
       );

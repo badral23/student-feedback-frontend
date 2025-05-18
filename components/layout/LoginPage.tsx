@@ -28,7 +28,7 @@ export function LoginForm({
     setIsLoading(true);
     try {
       console.log("data", data);
-      await login(data.username, data.password);
+      await login(data.email, data.password);
       toast.success("Login successful!");
       router.push("/dashboard");
     } catch (error) {
@@ -51,18 +51,19 @@ export function LoginForm({
                 </p>
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="username">Student Id</Label>
+                <Label htmlFor="email">Email</Label>
                 <Input
-                  {...register("username", {
-                    required: "Username is required",
+                  {...register("email", {
+                    required: "email is required",
                   })}
-                  id="username"
-                  placeholder="B12345678"
+                  type="email"
+                  id="email"
+                  placeholder="Asd@example.com"
                   required
                 />
-                {errors.username && (
+                {errors.email && (
                   <p className="mt-1 text-sm text-red-600">
-                    {errors.username.message as string}
+                    {errors.email.message as string}
                   </p>
                 )}
               </div>
