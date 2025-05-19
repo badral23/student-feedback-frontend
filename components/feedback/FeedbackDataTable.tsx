@@ -13,7 +13,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react";
+import { ArrowUpDown, ChevronDown, ChevronRight } from "lucide-react";
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
@@ -46,6 +46,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import EditFeedbackDialog from "./FeedbackEdit";
 import DeleteFeedbackDialog from "./FeedbackDelete";
+import { useSession } from "next-auth/react";
 
 // Define the feedback item type based on the provided data structure
 export interface Feedback {
@@ -64,6 +65,14 @@ export interface Feedback {
     email: string;
     role: string;
   };
+}
+
+function formatDate(dateString: string) {
+  return new Date(dateString).toLocaleString("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
 }
 
 export const columns: ColumnDef<Feedback>[] = [
@@ -103,14 +112,7 @@ export const columns: ColumnDef<Feedback>[] = [
       );
     },
     cell: ({ row }) => (
-      <div>
-        <Link
-          href={`/${row.original.id}`}
-          className="font-medium hover:underline"
-        >
-          {row.getValue("title")}
-        </Link>
-      </div>
+      <div className="font-medium px-3">{row.getValue("title")}</div>
     ),
   },
   {
@@ -160,14 +162,7 @@ export const columns: ColumnDef<Feedback>[] = [
       return getStatusBadge(status);
     },
   },
-  // {
-  //   accessorKey: "user.username",
-  //   header: "Submitted By",
-  //   cell: ({ row }) => {
-  //     const user = row.original.user;
-  //     return <div>{user?.username || "Unknown"}</div>;
-  //   },
-  // },
+
   {
     accessorKey: "createdAt",
     header: ({ column }) => {
@@ -183,7 +178,7 @@ export const columns: ColumnDef<Feedback>[] = [
       );
     },
     cell: ({ row }) => {
-      return <div>{formatDate(row.getValue("createdAt"))}</div>;
+      return <div className="p-3">{formatDate(row.getValue("createdAt"))}</div>;
     },
   },
   {
@@ -193,42 +188,19 @@ export const columns: ColumnDef<Feedback>[] = [
       const feedback = row.original;
 
       return (
-        <div>
+        <div className="flex gap-2 items-end">
           <EditFeedbackDialog feedback={feedback} />
           <DeleteFeedbackDialog feedbackId={feedback.id} />
+          <Link href={`/feedback/${feedback.id}`}>
+            <Button variant="ghost" className="cursor-pointer">
+              <ChevronRight className="h-4 w-4" />
+            </Button>
+          </Link>
         </div>
-        // <DropdownMenu>
-        //   <DropdownMenuTrigger asChild>
-        //     <Button variant="ghost" className="h-8 w-8 p-0">
-        //       <span className="sr-only">Open menu</span>
-        //       <MoreHorizontal className="h-4 w-4" />
-        //     </Button>
-        //   </DropdownMenuTrigger>
-        //   <DropdownMenuContent align="end">
-        //     <DropdownMenuLabel>Actions</DropdownMenuLabel>
-
-        //     <DropdownMenuSeparator />
-        //     <DropdownMenuItem asChild>
-        //       <DeleteFeedbackDialog feedbackId={feedback.id} />
-        //     </DropdownMenuItem>
-        //     <DropdownMenuItem asChild>
-        //       <EditFeedbackDialog feedback={feedback} />
-        //     </DropdownMenuItem>
-        //   </DropdownMenuContent>
-        // </DropdownMenu>
       );
     },
   },
 ];
-
-function formatDate(dateString: string) {
-  return new Date(dateString).toLocaleString("en-US", {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-  });
-}
-
 interface FeedbackDataTableProps {
   data: Feedback[];
 }
@@ -242,9 +214,149 @@ export function FeedbackDataTable({ data }: FeedbackDataTableProps) {
     React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
 
+  const ModeratorColumns: ColumnDef<Feedback>[] = [
+    {
+      id: "select",
+      header: ({ table }) => (
+        <Checkbox
+          checked={
+            table.getIsAllPageRowsSelected() ||
+            (table.getIsSomePageRowsSelected() && "indeterminate")
+          }
+          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+          aria-label="Select all"
+        />
+      ),
+      cell: ({ row }) => (
+        <Checkbox
+          checked={row.getIsSelected()}
+          onCheckedChange={(value) => row.toggleSelected(!!value)}
+          aria-label="Select row"
+        />
+      ),
+      enableSorting: false,
+      enableHiding: false,
+    },
+    {
+      accessorKey: "title",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            Title
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
+      cell: ({ row }) => (
+        <div className="font-medium hover:underline px-3">
+          {row.getValue("title")}
+        </div>
+      ),
+    },
+    {
+      accessorKey: "description",
+      header: "Description",
+      cell: ({ row }) => (
+        <div className="max-w-[300px] truncate">
+          {row.getValue("description")}
+        </div>
+      ),
+    },
+    {
+      accessorKey: "status",
+      header: "Status",
+      cell: ({ row }) => {
+        const status = row.getValue("status") as string;
+
+        const getStatusBadge = (status: string) => {
+          switch (status) {
+            case "new":
+              return (
+                <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-100">
+                  {status}
+                </Badge>
+              );
+            case "in-progress":
+              return (
+                <Badge className="bg-yellow-100 text-yellow-800 hover:bg-yellow-100">
+                  {status}
+                </Badge>
+              );
+            case "resolved":
+              return (
+                <Badge className="bg-green-100 text-green-800 hover:bg-green-100">
+                  {status}
+                </Badge>
+              );
+            default:
+              return (
+                <Badge className="bg-gray-100 text-gray-800 hover:bg-gray-100">
+                  {status}
+                </Badge>
+              );
+          }
+        };
+
+        return getStatusBadge(status);
+      },
+    },
+    {
+      accessorKey: "user.username",
+      header: "Submitted By",
+      cell: ({ row }) => {
+        const user = row.original.user;
+        return <div>{user?.username || "Unknown"}</div>;
+      },
+    },
+    {
+      accessorKey: "createdAt",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            className="whitespace-nowrap"
+          >
+            Created At
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
+      cell: ({ row }) => {
+        return <div>{formatDate(row.getValue("createdAt"))}</div>;
+      },
+    },
+    {
+      id: "actions",
+      enableHiding: false,
+      cell: ({ row }) => {
+        const feedback = row.original;
+
+        return (
+          <div className="flex gap-2 items-end">
+            <EditFeedbackDialog feedback={feedback} />
+            <DeleteFeedbackDialog feedbackId={feedback.id} />
+            <Link href={`/${feedback.id}`}>
+              <Button variant="ghost" className="cursor-pointer">
+                <ChevronRight className="h-4 w-4" />
+              </Button>
+            </Link>
+          </div>
+        );
+      },
+    },
+  ];
+
+  const { data: ss } = useSession();
+
+  const user: any = ss?.user;
+
   const table = useReactTable({
     data,
-    columns,
+    columns: user?.role === "moderator" ? ModeratorColumns : columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),

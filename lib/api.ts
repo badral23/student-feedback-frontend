@@ -42,6 +42,7 @@ export async function sfFetch<
       cache: "force-cache",
       ...options,
       headers,
+      tags: options.tags,
     });
 
     const response = await fetch(endpoint, fetchOptions);
