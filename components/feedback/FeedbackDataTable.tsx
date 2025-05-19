@@ -135,19 +135,31 @@ export const columns: ColumnDef<Feedback>[] = [
           case "new":
             return (
               <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-100">
-                {status}
+                New
               </Badge>
             );
-          case "in-progress":
-            return (
-              <Badge className="bg-yellow-100 text-yellow-800 hover:bg-yellow-100">
-                {status}
-              </Badge>
-            );
-          case "resolved":
+          case "approved":
             return (
               <Badge className="bg-green-100 text-green-800 hover:bg-green-100">
-                {status}
+                Approved
+              </Badge>
+            );
+          case "to-be-submitted-to-branch-meeting":
+            return (
+              <Badge className="bg-yellow-100 text-yellow-800 hover:bg-yellow-100">
+                Branch Meeting
+              </Badge>
+            );
+          case "rejected":
+            return (
+              <Badge className="bg-red-100 text-red-800 hover:bg-red-100">
+                Rejected
+              </Badge>
+            );
+          case "completed":
+            return (
+              <Badge className="bg-emerald-100 text-emerald-800 hover:bg-emerald-100">
+                Completed
               </Badge>
             );
           default:
@@ -274,19 +286,31 @@ export function FeedbackDataTable({ data }: FeedbackDataTableProps) {
             case "new":
               return (
                 <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-100">
-                  {status}
+                  New
                 </Badge>
               );
-            case "in-progress":
-              return (
-                <Badge className="bg-yellow-100 text-yellow-800 hover:bg-yellow-100">
-                  {status}
-                </Badge>
-              );
-            case "resolved":
+            case "approved":
               return (
                 <Badge className="bg-green-100 text-green-800 hover:bg-green-100">
-                  {status}
+                  Approved
+                </Badge>
+              );
+            case "to-be-submitted-to-branch-meeting":
+              return (
+                <Badge className="bg-yellow-100 text-yellow-800 hover:bg-yellow-100">
+                  Branch Meeting
+                </Badge>
+              );
+            case "rejected":
+              return (
+                <Badge className="bg-red-100 text-red-800 hover:bg-red-100">
+                  Rejected
+                </Badge>
+              );
+            case "completed":
+              return (
+                <Badge className="bg-emerald-100 text-emerald-800 hover:bg-emerald-100">
+                  Completed
                 </Badge>
               );
             default:
@@ -337,8 +361,6 @@ export function FeedbackDataTable({ data }: FeedbackDataTableProps) {
 
         return (
           <div className="flex gap-2 items-end">
-            <EditFeedbackDialog feedback={feedback} />
-            <DeleteFeedbackDialog feedbackId={feedback.id} />
             <Link href={`/feedback/${feedback.id}`}>
               <Button variant="ghost" className="cursor-pointer">
                 <ChevronRight className="h-4 w-4" />

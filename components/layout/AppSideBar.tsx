@@ -45,24 +45,18 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         icon: LayoutDashboardIcon,
         show: true,
       },
-      {
-        title: "Feedback",
-        url: "/feedback",
-        icon: MessageSquareText,
-        show: true,
-      },
-      { title: "Profile", url: "/profile", icon: UserRoundPen, show: true },
+      // {
+      //   title: "Feedback",
+      //   url: "/feedback",
+      //   icon: MessageSquareText,
+      //   show: true,
+      // },
+      // { title: "Profile", url: "/profile", icon: UserRoundPen, show: true },
       {
         title: "Departments",
         url: "/admin/departments",
         icon: Flame,
         show: user?.role === "admin",
-      },
-      {
-        title: "Categories",
-        url: "/admin/categories",
-        icon: ChartBarStacked,
-        show: user?.role === "moderator",
       },
       {
         title: "Users",
