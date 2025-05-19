@@ -1,57 +1,114 @@
-// lib/api.ts
-import axios from "axios";
-import Cookies from "js-cookie";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+"use server";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+import { auth } from "@/auth";
 
-const api = axios.create({
-  baseURL: API_URL,
-});
+const domain = process.env.NEXT_PUBLIC_API_URL;
 
-// Request interceptor to add auth token
-api.interceptors.request.use(
-  (config) => {
-    const token = Cookies.get("token");
+if (!domain) {
+  throw new Error("NEXT_PUBLIC_API_URL is not set or invalid");
+}
 
-    console.log("token", token);
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+type FetchResult<T> = {
+  body: T;
+  error: string | null;
+};
+
+type FetchOptions = Omit<RequestInit, "body"> & {
+  body?: Record<string, unknown>;
+  searchParams?: Record<string, string | number | boolean | undefined | null>;
+  tags?: string[];
+};
+
+export async function sfFetch<
+  T extends object &
+    Partial<{
+      error?: string;
+      success?: boolean;
+      message?: string;
+      data?: any;
+      status?: number;
+    }>
+>(url: string, options: FetchOptions = {}): Promise<FetchResult<T>> {
+  try {
+    const session = await auth();
+    const headers = new Headers(options.headers);
+
+    if (!!session?.user?.id && !headers.has("Authorization")) {
+      headers.set("Authorization", `Bearer ${session.user.id}`);
     }
-    return config;
-  },
-  (error) => Promise.reject(error)
-);
 
-// Response interceptor to handle errors
-api.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    if (error.response?.status === 401) {
-      localStorage.removeItem("token");
-      Cookies.remove("token");
-      window.location.href = "/login";
+    const { endpoint, fetchOptions } = genFetchParams(url, {
+      cache: "force-cache",
+      ...options,
+      headers,
+    });
+
+    const response = await fetch(endpoint, fetchOptions);
+    const body: T = await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        body?.error || (body as any)?.message || String(response.status)
+      );
     }
-    return Promise.reject(error);
+
+    return {
+      body,
+      error: null,
+    };
+  } catch (err: any) {
+    return {
+      body: {} as T,
+      error: err?.message || "Unknown error",
+    };
   }
-);
+}
 
-export default api;
+function genFetchParams(url: string, options: FetchOptions = {}) {
+  const isBodyJSON = options.body && typeof options.body === "object";
+  const headers = new Headers(options.headers);
 
-// API functions for each entity
-export const authAPI = {
-  login: (username: string, password: string) =>
-    api.post("/auth/login", { username, password }),
-  register: (userData: any) => api.post("/auth/register", userData),
-  getProfile: () => api.get("/users/profile"),
-};
+  if (isBodyJSON && !headers.has("Content-Type")) {
+    headers.set("Content-Type", "application/json");
+  }
 
-export const feedbackAPI = {
-  getAll: (params?: any) => api.get("/feedback", { params }),
-  getById: (id: string) => api.get(`/feedback/${id}`),
-  create: (data: any) => api.post("/feedback", data),
-  update: (id: string, data: any) => api.patch(`/feedback/${id}`, data),
-  delete: (id: string) => api.delete(`/feedback/${id}`),
-  getStatistics: () => api.get("/feedback/statistics/summary"),
-};
+  const fetchOptions: any = {
+    ...options,
+    headers,
+    credentials: "include",
+    mode: "cors",
+    redirect: "follow",
+    referrerPolicy: "no-referrer",
+  };
 
-// Add other API functions for departments, categories, comments, etc.
+  if (isBodyJSON) {
+    fetchOptions.body = JSON.stringify(clearObj(options.body));
+  }
+
+  let endpoint = `${domain}${url}`;
+  if (options.searchParams && Object.keys(options.searchParams).length > 0) {
+    const query = objToQs(clearObj(options.searchParams));
+    endpoint += `?${query}`;
+  }
+
+  return { endpoint, fetchOptions };
+}
+
+// Utility: Remove undefined/null values
+function clearObj(obj?: Record<string, any>) {
+  if (!obj) return {};
+  return Object.fromEntries(
+    Object.entries(obj).filter(([_, v]) => v !== undefined && v !== null)
+  );
+}
+
+// Utility: Convert object to query string
+function objToQs(obj: Record<string, any>): string {
+  return Object.entries(obj)
+    .map(
+      ([key, value]) =>
+        `${encodeURIComponent(key)}=${encodeURIComponent(String(value))}`
+    )
+    .join("&");
+}

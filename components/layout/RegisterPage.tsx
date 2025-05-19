@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { authAPI } from "@/lib/api";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -17,6 +16,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { sfFetch } from "@/lib/api";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -30,19 +30,21 @@ export default function RegisterPage() {
   const onSubmit = async (data: any) => {
     setIsLoading(true);
     try {
-      await authAPI.register({
-        username: data.username,
-        email: data.email,
-        password: data.password,
-        role: "student", // Default role for registration
-        department: data.department,
-        studentId: data.studentId,
+      const res = await sfFetch("/auth/register", {
+        method: "POST",
+        body: {
+          username: data.username,
+          email: data.email,
+          password: data.password,
+          studentId: data.studentId,
+        },
       });
 
-      toast.success("Registration successful! Please log in.");
-      router.push("/login");
+      if (res.body) {
+        toast.success("Registration successful! Please log in.");
+        router.push("/login");
+      }
     } catch (error: any) {
-      console.error(error);
       toast.error(error.response?.data?.message || "Registration failed");
     } finally {
       setIsLoading(false);
@@ -64,11 +66,11 @@ export default function RegisterPage() {
         <CardContent>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="username">Student Id</Label>
+              <Label htmlFor="username">Username</Label>
               <Input
                 id="username"
                 {...register("username", { required: "Username is required" })}
-                placeholder="B123456789"
+                placeholder="John Due"
               />
               {errors.username && (
                 <p className="text-sm text-red-500">
@@ -114,22 +116,6 @@ export default function RegisterPage() {
               {errors.password && (
                 <p className="text-sm text-red-500">
                   {errors.password.message as string}
-                </p>
-              )}
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="department">Department</Label>
-              <Input
-                id="department"
-                {...register("department", {
-                  required: "Department is required",
-                })}
-                placeholder="Computer Science"
-              />
-              {errors.department && (
-                <p className="text-sm text-red-500">
-                  {errors.department.message as string}
                 </p>
               )}
             </div>

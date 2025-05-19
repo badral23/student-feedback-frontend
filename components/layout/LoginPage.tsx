@@ -1,3 +1,5 @@
+"use client";
+
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -5,16 +7,15 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { login } from "@/app/(auth)/action";
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
-  const { login } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
 
   const router = useRouter();
@@ -24,15 +25,17 @@ export function LoginForm({
     formState: { errors },
   } = useForm();
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async ({ email, password }: any) => {
     setIsLoading(true);
     try {
-      console.log("data", data);
-      await login(data.email, data.password);
-      toast.success("Login successful!");
-      router.push("/dashboard");
+      const { status } = await login(email, password);
+      if (status === "success") {
+        toast.success("Login successful!");
+        router.push("/");
+      } else {
+        toast.error("Invalid username or password");
+      }
     } catch (error) {
-      console.error(error);
       toast.error("Invalid username or password");
     } finally {
       setIsLoading(false);

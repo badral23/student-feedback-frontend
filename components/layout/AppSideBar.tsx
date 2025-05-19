@@ -4,22 +4,13 @@ import * as React from "react";
 import {
   ArrowUpCircleIcon,
   ChartBarStacked,
-  ClipboardListIcon,
-  DatabaseIcon,
-  FileIcon,
   Flame,
-  HelpCircleIcon,
   LayoutDashboardIcon,
   MessageSquareText,
-  SearchIcon,
-  SettingsIcon,
   UserRoundPen,
   UsersRound,
 } from "lucide-react";
-
-import { NavDocuments } from "@/components/layout/NavDocuments";
 import { NavMain } from "@/components/layout/NavMain";
-import { NavSecondary } from "@/components/layout/NavSecondary";
 import { NavUser } from "@/components/layout/NavUser";
 import {
   Sidebar,
@@ -30,12 +21,17 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { useAuth } from "@/contexts/AuthContext";
+import { useSession } from "next-auth/react";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const { user } = useAuth();
+  const { data: session } = useSession();
+  const dataSession: any = session?.user;
 
-  console.log("user", user);
+  const user = {
+    username: dataSession?.name ?? "",
+    email: dataSession?.email ?? "",
+    role: dataSession?.role ?? "",
+  };
 
   const data = {
     user: {
@@ -45,7 +41,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     navMain: [
       {
         title: "Dashboard",
-        url: "/dashboard",
+        url: "/",
         icon: LayoutDashboardIcon,
         show: true,
       },
