@@ -251,9 +251,7 @@ export function FeedbackDataTable({ data }: FeedbackDataTableProps) {
         );
       },
       cell: ({ row }) => (
-        <div className="font-medium hover:underline px-3">
-          {row.getValue("title")}
-        </div>
+        <div className="font-medium px-3">{row.getValue("title")}</div>
       ),
     },
     {
@@ -326,7 +324,9 @@ export function FeedbackDataTable({ data }: FeedbackDataTableProps) {
         );
       },
       cell: ({ row }) => {
-        return <div>{formatDate(row.getValue("createdAt"))}</div>;
+        return (
+          <div className="p-3">{formatDate(row.getValue("createdAt"))}</div>
+        );
       },
     },
     {
@@ -339,7 +339,7 @@ export function FeedbackDataTable({ data }: FeedbackDataTableProps) {
           <div className="flex gap-2 items-end">
             <EditFeedbackDialog feedback={feedback} />
             <DeleteFeedbackDialog feedbackId={feedback.id} />
-            <Link href={`/${feedback.id}`}>
+            <Link href={`/feedback/${feedback.id}`}>
               <Button variant="ghost" className="cursor-pointer">
                 <ChevronRight className="h-4 w-4" />
               </Button>
