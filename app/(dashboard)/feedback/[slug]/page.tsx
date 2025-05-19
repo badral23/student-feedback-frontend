@@ -7,11 +7,7 @@ import Link from "next/link";
 import { getFeedbackDetail } from "@/lib/get-feedback";
 import { cn } from "@/lib/utils";
 
-export default async function Feedback({
-  params,
-}: {
-  params: { slug: string };
-}) {
+export default async function Feedback({ params }: any) {
   const { slug } = await params;
   const data = await getFeedbackDetail({ slug });
 
