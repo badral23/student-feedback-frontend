@@ -10,7 +10,6 @@ import { cn } from "@/lib/utils";
 export default async function Feedback({ params }: any) {
   const { slug } = await params;
   const data = await getFeedbackDetail({ slug });
-
   const body: any = data;
 
   return (

@@ -356,7 +356,10 @@ export function FeedbackDataTable({ data }: FeedbackDataTableProps) {
 
   const table = useReactTable({
     data,
-    columns: user?.role === "moderator" ? ModeratorColumns : columns,
+    columns:
+      user?.role === "moderator" || user?.role === "admin"
+        ? ModeratorColumns
+        : columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
