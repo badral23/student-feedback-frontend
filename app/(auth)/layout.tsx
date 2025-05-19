@@ -3,7 +3,6 @@
 import { useAuth } from "@/contexts/AuthContext";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-import { Toaster } from "react-hot-toast";
 
 export default function AuthLayout({
   children,
@@ -19,10 +18,5 @@ export default function AuthLayout({
     }
   }, [user, isLoading, router]);
 
-  return (
-    <>
-      {children}
-      <Toaster position="top-right" />
-    </>
-  );
+  return <>{children}</>;
 }

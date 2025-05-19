@@ -3,10 +3,10 @@
 
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { feedbackAPI } from "@/lib/api";
 import { FaSpinner } from "react-icons/fa";
+import { toast } from "sonner";
 
 interface FeedbackFormProps {
   feedbackId?: string;
@@ -45,6 +45,7 @@ export default function FeedbackForm({
         setCategories(data);
       } catch (error) {
         console.error("Error fetching categories:", error);
+
         toast.error("Failed to load categories");
       } finally {
         setIsLoadingCategories(false);

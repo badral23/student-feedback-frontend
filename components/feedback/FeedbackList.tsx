@@ -5,7 +5,7 @@ import { feedbackAPI } from "@/lib/api";
 import { useEffect, useState } from "react";
 import { FaPlus, FaSpinner } from "react-icons/fa";
 import Link from "next/link";
-import { toast } from "react-hot-toast";
+import { toast } from "sonner";
 
 export default function FeedbackListPage() {
   const { user } = useAuth();
