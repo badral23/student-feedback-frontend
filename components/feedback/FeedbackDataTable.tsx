@@ -401,13 +401,13 @@ export function FeedbackDataTable({ data }: FeedbackDataTableProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-xl">Feedback</CardTitle>
-        <CardDescription>Manage student feedback submissions.</CardDescription>
+        <CardTitle className="text-xl">Санал хүсэлт</CardTitle>
+        <CardDescription>Оюутны санал хүсэлтийг хянах</CardDescription>
       </CardHeader>
       <CardContent>
         <div className="mb-4 flex items-center gap-4">
           <Input
-            placeholder="Filter by title..."
+            placeholder="Гарчгаар шүүх..."
             value={(table.getColumn("title")?.getFilterValue() as string) ?? ""}
             onChange={(event) =>
               table.getColumn("title")?.setFilterValue(event.target.value)
@@ -509,7 +509,7 @@ export function FeedbackDataTable({ data }: FeedbackDataTableProps) {
               onClick={() => table.previousPage()}
               disabled={!table.getCanPreviousPage()}
             >
-              Previous
+              Өмнөх
             </Button>
             <Button
               variant="outline"
@@ -517,7 +517,7 @@ export function FeedbackDataTable({ data }: FeedbackDataTableProps) {
               onClick={() => table.nextPage()}
               disabled={!table.getCanNextPage()}
             >
-              Next
+              Дараах
             </Button>
           </div>
         </div>

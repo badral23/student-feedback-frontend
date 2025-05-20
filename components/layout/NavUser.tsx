@@ -90,7 +90,7 @@ export function NavUser({
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={() => signOut()}>
               <LogOutIcon />
-              Log out
+              Гарах
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

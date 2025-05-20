@@ -48,9 +48,9 @@ export function LoginForm({
           <form onSubmit={handleSubmit(onSubmit)} className="p-6 md:p-8">
             <div className="flex flex-col gap-6">
               <div className="flex flex-col items-center text-center">
-                <h1 className="text-2xl font-bold">Welcome back</h1>
+                <h1 className="text-2xl font-bold">Тавтай морилно уу</h1>
                 <p className="text-balance text-muted-foreground">
-                  Login to your Student Feedback System
+                  Оюутны санал хүсэлтийн системд нэвтрэх
                 </p>
               </div>
               <div className="grid gap-2">
@@ -61,7 +61,7 @@ export function LoginForm({
                   })}
                   type="email"
                   id="email"
-                  placeholder="Asd@example.com"
+                  placeholder="Student@must.edu.mn"
                   required
                 />
                 {errors.email && (

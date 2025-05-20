@@ -60,14 +60,14 @@ export default function EditFeedbackDialog({ feedback }: { feedback: any }) {
       <DialogContent className="sm:max-w-[425px]">
         <form onSubmit={handleSubmit}>
           <DialogHeader>
-            <DialogTitle>Edit Feedback</DialogTitle>
+            <DialogTitle>Санал хүсэлтийг засварлах</DialogTitle>
             <DialogDescription>
-              Modify the title and description of your feedback.
+              Санал хүсэлтийнхээ гарчиг, тайлбарыг өөрчлөх.
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4">
             <div className="grid gap-2">
-              <Label htmlFor="title">Title</Label>
+              <Label htmlFor="title">Гарчиг</Label>
               <Input
                 id="title"
                 value={title}
@@ -76,7 +76,7 @@ export default function EditFeedbackDialog({ feedback }: { feedback: any }) {
               />
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="description">Description</Label>
+              <Label htmlFor="description">Тайлбар</Label>
               <Textarea
                 id="description"
                 value={description}
@@ -92,10 +92,10 @@ export default function EditFeedbackDialog({ feedback }: { feedback: any }) {
               onClick={() => setOpen(false)}
               disabled={isSubmitting}
             >
-              Cancel
+              Цуцлах
             </Button>
             <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? "Updating..." : "Update Feedback"}
+              {isSubmitting ? "Ачааллаж байна..." : "Шинэчлэх"}
             </Button>
           </DialogFooter>
         </form>

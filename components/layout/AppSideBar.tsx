@@ -40,7 +40,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     },
     navMain: [
       {
-        title: "Dashboard",
+        title: "Нүүр хуудас",
         url: "/",
         icon: LayoutDashboardIcon,
         show: true,
@@ -113,7 +113,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               <a href="#">
                 <ArrowUpCircleIcon className="h-5 w-5" />
                 <span className="text-base font-semibold">
-                  Student Feedback
+                  Оюутны санал хүсэлт
                 </span>
               </a>
             </SidebarMenuButton>

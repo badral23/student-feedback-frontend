@@ -6,8 +6,8 @@ import { Toaster } from "@/components/ui/sonner";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Student Feedback System",
-  description: "A system for students to submit and track feedback",
+  title: "Сурагчийн санал хүсэлтийн систем",
+  description: "Сурагчийн санал хүсэлтийг хүлээн авч хариу өгөх систем",
 };
 
 export default function RootLayout({

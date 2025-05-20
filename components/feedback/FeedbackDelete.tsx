@@ -55,9 +55,9 @@ export default function DeleteFeedbackDialog({
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Delete Feedback</DialogTitle>
+          <DialogTitle>Санал хүсэлтийг устгах</DialogTitle>
         </DialogHeader>
-        <p>Are you sure you want to delete this feedback?</p>
+        <p>Та үүнийг устгахдаа илтгэлтэй байна уу?</p>
         <DialogFooter>
           <Button
             variant="outline"

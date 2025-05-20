@@ -23,11 +23,14 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
 const STATUS_OPTIONS = [
-  { value: "new", label: "New" },
-  { value: "approved", label: "Approved" },
-  { value: "to-be-submitted-to-branch-meeting", label: "Branch Meeting" },
-  { value: "rejected", label: "Rejected" },
-  { value: "completed", label: "Completed" },
+  { value: "new", label: "Шинэ" },
+  { value: "approved", label: "Хүлээн авсан" },
+  {
+    value: "to-be-submitted-to-branch-meeting",
+    label: "Салбарын хурлаах оруулах",
+  },
+  { value: "rejected", label: "Татгалзсан" },
+  { value: "completed", label: "Дууссан" },
 ];
 
 export default function ChangeStatusDialog({

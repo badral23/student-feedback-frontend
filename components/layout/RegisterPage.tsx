@@ -56,21 +56,21 @@ export default function RegisterPage() {
       <Card className="w-full max-w-md">
         <CardHeader>
           <CardTitle className="text-2xl font-bold text-center">
-            Register for Student Feedback System
+            Оюутны санал хүсэлтийн системд бүртгүүлэх
           </CardTitle>
           <CardDescription className="text-center">
-            Create an account to get started
+            Эхлэхийн тулд бүртгэл үүсгэнэ үү
           </CardDescription>
         </CardHeader>
 
         <CardContent>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="username">Username</Label>
+              <Label htmlFor="username">Хэрэглэгчийн нэр</Label>
               <Input
                 id="username"
                 {...register("username", { required: "Username is required" })}
-                placeholder="John Due"
+                placeholder="Бадрал Бат-Очир"
               />
               {errors.username && (
                 <p className="text-sm text-red-500">
@@ -80,7 +80,7 @@ export default function RegisterPage() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email">Э-мэйл</Label>
               <Input
                 id="email"
                 type="email"
@@ -101,15 +101,15 @@ export default function RegisterPage() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password">Нууц үг</Label>
               <Input
                 id="password"
                 type="password"
                 {...register("password", {
-                  required: "Password is required",
+                  required: "Нууц үг заавал хийх шаардлагатай",
                   minLength: {
                     value: 6,
-                    message: "Password must be at least 6 characters long",
+                    message: "Нууц үг дор хаяж 6 тэмдэгттэй байх ёстой",
                   },
                 })}
               />
@@ -125,7 +125,7 @@ export default function RegisterPage() {
               <Input
                 id="studentId"
                 {...register("studentId", {
-                  required: "Student ID is required",
+                  required: "Оюутны код шаардлагатай",
                 })}
                 placeholder="12345678"
               />

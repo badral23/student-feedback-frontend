@@ -24,7 +24,7 @@ export function SiteHeader() {
         />
         <h1 className="text-base font-medium">
           {user?.role.slice(0, 1).toUpperCase()}
-          {user?.role.slice(1)} Dashboard
+          {user?.role.slice(1)} Хяналтын самбар
         </h1>
       </div>
     </header>

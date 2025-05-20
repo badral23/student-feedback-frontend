@@ -42,7 +42,7 @@ export default function FeedbackReplyForm({ slug }: { slug: string }) {
 
   return (
     <div className="space-y-2">
-      <h4 className="text-base font-medium">Add a reply</h4>
+      <h4 className="text-base font-medium">Хариу өгөх</h4>
       <Textarea
         placeholder="Write your comment..."
         value={message}

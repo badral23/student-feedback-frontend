@@ -58,16 +58,15 @@ export default function StudentFeedbackDialog() {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button>
-          <Plus className="mr-2 h-4 w-4" /> New Feedback
+          <Plus className="mr-2 h-4 w-4" /> Шинэ хүсэлт
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <form onSubmit={handleSubmit}>
           <DialogHeader>
-            <DialogTitle>Student Feedback</DialogTitle>
+            <DialogTitle>Оюутны санал хүсэлт</DialogTitle>
             <DialogDescription>
-              Share your thoughts about the course or instructor. All feedback
-              is anonymous.
+              Та салбарт хүргүүлэх өөрийн санал хүсэлтээ бичнэ үү.
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4">
@@ -79,7 +78,7 @@ export default function StudentFeedbackDialog() {
                 id="title"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                placeholder="Brief summary of your feedback"
+                placeholder="Таны санал хүсэлтийн товч агуулга."
                 required
               />
             </div>
@@ -91,7 +90,7 @@ export default function StudentFeedbackDialog() {
                 id="description"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                placeholder="Please provide detailed feedback..."
+                placeholder="Дэлгэрэнгүй санал хүсэлтээ өгнө үү."
                 className="min-h-[100px]"
                 required
               />
@@ -104,7 +103,7 @@ export default function StudentFeedbackDialog() {
               onClick={() => setOpen(false)}
               disabled={isSubmitting}
             >
-              Cancel
+              Цуцлах
             </Button>
             <Button type="submit" disabled={isSubmitting}>
               {isSubmitting ? (
@@ -134,7 +133,7 @@ export default function StudentFeedbackDialog() {
                   Submitting...
                 </>
               ) : (
-                "Submit Feedback"
+                "Санал хүсэлтийг илгээх"
               )}
             </Button>
           </DialogFooter>
