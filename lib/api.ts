@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use server";
 
-import { auth } from "@/auth";
+import { auth, signOut } from "@/auth";
 
 const domain = process.env.NEXT_PUBLIC_API_URL;
 
@@ -47,6 +47,10 @@ export async function sfFetch<
 
     const response = await fetch(endpoint, fetchOptions);
     const body: T = await response.json();
+
+    if (response.status === 401) {
+      signOut();
+    }
 
     if (!response.ok) {
       throw new Error(

@@ -19,7 +19,15 @@ import { sfFetch } from "@/lib/api";
 import action from "@/lib/revalidate";
 import { Pencil } from "lucide-react";
 
-export default function EditFeedbackDialog({ feedback }: { feedback: any }) {
+export default function EditFeedbackDialog({
+  feedbackId,
+  data,
+}: {
+  feedbackId: string;
+  data: any;
+}) {
+  const feedback = data.filter((item: any) => item.id == feedbackId)[0];
+
   const [open, setOpen] = useState(false);
   const [title, setTitle] = useState(feedback.title);
   const [description, setDescription] = useState(feedback.description);

@@ -35,6 +35,37 @@ export async function getFeedback(): Promise<Feedback[]> {
   return data.data as Feedback[];
 }
 
+export async function getStatistics(): Promise<{
+  total: number;
+  new: number;
+  rejected: number;
+  completed: number;
+}> {
+  const baseUrl = process.env.NEXT_PUBLIC_API_URL;
+  const session = await auth();
+
+  if (!session?.user?.id) {
+    throw new Error("Unauthorized: No user session found.");
+  }
+
+  const response = await fetch(`${baseUrl}/feedback/statistics/summary`, {
+    headers: {
+      Accept: "application/json",
+      Authorization: `Bearer ${session.user.id}`,
+    },
+    next: { tags: ["sum"] },
+  });
+
+  if (!response.ok) {
+    throw new Error(
+      `Failed to fetch feedback: ${response.status} ${response.statusText}`
+    );
+  }
+
+  const data = await response.json();
+  return data;
+}
+
 export async function getFeedbackDetail({
   slug,
 }: {

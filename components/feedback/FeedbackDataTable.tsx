@@ -24,14 +24,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Checkbox } from "@/components/ui/checkbox";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
@@ -47,6 +43,7 @@ import { Badge } from "@/components/ui/badge";
 import EditFeedbackDialog from "./FeedbackEdit";
 import DeleteFeedbackDialog from "./FeedbackDelete";
 import { useSession } from "next-auth/react";
+import { DataTableFacetedFilter } from "./FeedbackFaceted";
 
 // Define the feedback item type based on the provided data structure
 export interface Feedback {
@@ -75,144 +72,6 @@ function formatDate(dateString: string) {
   });
 }
 
-export const columns: ColumnDef<Feedback>[] = [
-  {
-    id: "select",
-    header: ({ table }) => (
-      <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate")
-        }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-      />
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  },
-  {
-    accessorKey: "title",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Title
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
-    cell: ({ row }) => (
-      <div className="font-medium px-3">{row.getValue("title")}</div>
-    ),
-  },
-  {
-    accessorKey: "description",
-    header: "Description",
-    cell: ({ row }) => (
-      <div className="max-w-[300px] truncate">
-        {row.getValue("description")}
-      </div>
-    ),
-  },
-  {
-    accessorKey: "status",
-    header: "Status",
-    cell: ({ row }) => {
-      const status = row.getValue("status") as string;
-
-      const getStatusBadge = (status: string) => {
-        switch (status) {
-          case "new":
-            return (
-              <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-100">
-                New
-              </Badge>
-            );
-          case "approved":
-            return (
-              <Badge className="bg-green-100 text-green-800 hover:bg-green-100">
-                Approved
-              </Badge>
-            );
-          case "to-be-submitted-to-branch-meeting":
-            return (
-              <Badge className="bg-yellow-100 text-yellow-800 hover:bg-yellow-100">
-                Branch Meeting
-              </Badge>
-            );
-          case "rejected":
-            return (
-              <Badge className="bg-red-100 text-red-800 hover:bg-red-100">
-                Rejected
-              </Badge>
-            );
-          case "completed":
-            return (
-              <Badge className="bg-emerald-100 text-emerald-800 hover:bg-emerald-100">
-                Completed
-              </Badge>
-            );
-          default:
-            return (
-              <Badge className="bg-gray-100 text-gray-800 hover:bg-gray-100">
-                {status}
-              </Badge>
-            );
-        }
-      };
-
-      return getStatusBadge(status);
-    },
-  },
-
-  {
-    accessorKey: "createdAt",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="whitespace-nowrap"
-        >
-          Created At
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
-    cell: ({ row }) => {
-      return <div className="p-3">{formatDate(row.getValue("createdAt"))}</div>;
-    },
-  },
-  {
-    id: "actions",
-    enableHiding: false,
-    cell: ({ row }) => {
-      const feedback = row.original;
-
-      return (
-        <div className="flex gap-2 items-end">
-          <EditFeedbackDialog feedback={feedback} />
-          <DeleteFeedbackDialog feedbackId={feedback.id} />
-          <Link href={`/feedback/${feedback.id}`}>
-            <Button variant="ghost" className="cursor-pointer">
-              <ChevronRight className="h-4 w-4" />
-            </Button>
-          </Link>
-        </div>
-      );
-    },
-  },
-];
 interface FeedbackDataTableProps {
   data: Feedback[];
 }
@@ -226,29 +85,129 @@ export function FeedbackDataTable({ data }: FeedbackDataTableProps) {
     React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
 
-  const ModeratorColumns: ColumnDef<Feedback>[] = [
+  const columns: ColumnDef<Feedback>[] = [
     {
-      id: "select",
-      header: ({ table }) => (
-        <Checkbox
-          checked={
-            table.getIsAllPageRowsSelected() ||
-            (table.getIsSomePageRowsSelected() && "indeterminate")
-          }
-          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-          aria-label="Select all"
-        />
-      ),
+      accessorKey: "title",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            Title
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
       cell: ({ row }) => (
-        <Checkbox
-          checked={row.getIsSelected()}
-          onCheckedChange={(value) => row.toggleSelected(!!value)}
-          aria-label="Select row"
-        />
+        <div className="font-medium px-3">{row.getValue("title")}</div>
       ),
-      enableSorting: false,
-      enableHiding: false,
     },
+
+    {
+      accessorKey: "description",
+      header: "Description",
+      cell: ({ row }) => (
+        <div className="max-w-[300px] truncate">
+          {row.getValue("description")}
+        </div>
+      ),
+    },
+    {
+      accessorKey: "status",
+      header: "Status",
+      enableColumnFilter: true,
+
+      cell: ({ row }) => {
+        const status = row.getValue("status") as string;
+
+        const getStatusBadge = (status: string) => {
+          switch (status) {
+            case "new":
+              return (
+                <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-100">
+                  New
+                </Badge>
+              );
+            case "approved":
+              return (
+                <Badge className="bg-green-100 text-green-800 hover:bg-green-100">
+                  Approved
+                </Badge>
+              );
+            case "to-be-submitted-to-branch-meeting":
+              return (
+                <Badge className="bg-yellow-100 text-yellow-800 hover:bg-yellow-100">
+                  Branch Meeting
+                </Badge>
+              );
+            case "rejected":
+              return (
+                <Badge className="bg-red-100 text-red-800 hover:bg-red-100">
+                  Rejected
+                </Badge>
+              );
+            case "completed":
+              return (
+                <Badge className="bg-emerald-100 text-emerald-800 hover:bg-emerald-100">
+                  Completed
+                </Badge>
+              );
+            default:
+              return (
+                <Badge className="bg-gray-100 text-gray-800 hover:bg-gray-100">
+                  {status}
+                </Badge>
+              );
+          }
+        };
+
+        return getStatusBadge(status);
+      },
+    },
+
+    {
+      accessorKey: "createdAt",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            className="whitespace-nowrap"
+          >
+            Created At
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
+      cell: ({ row }) => {
+        return (
+          <div className="p-3">{formatDate(row.getValue("createdAt"))}</div>
+        );
+      },
+    },
+    {
+      id: "actions",
+      enableHiding: false,
+      cell: ({ row }) => {
+        let feedback = row.original;
+
+        return (
+          <div className="flex gap-2 items-end">
+            <EditFeedbackDialog feedbackId={feedback.id} data={data} />
+            <DeleteFeedbackDialog feedbackId={feedback.id} />
+            <Link href={`/feedback/${feedback.id}`}>
+              <Button variant="ghost" className="cursor-pointer">
+                <ChevronRight className="h-4 w-4" />
+              </Button>
+            </Link>
+          </div>
+        );
+      },
+    },
+  ];
+
+  const ModeratorColumns: ColumnDef<Feedback>[] = [
     {
       accessorKey: "title",
       header: ({ column }) => {
@@ -357,7 +316,7 @@ export function FeedbackDataTable({ data }: FeedbackDataTableProps) {
       id: "actions",
       enableHiding: false,
       cell: ({ row }) => {
-        const feedback = row.original;
+        let feedback = row.original;
 
         return (
           <div className="flex gap-2 items-end">
@@ -414,6 +373,36 @@ export function FeedbackDataTable({ data }: FeedbackDataTableProps) {
             }
             className="max-w-sm"
           />
+
+          {table.getColumn("status") && (
+            <DataTableFacetedFilter
+              column={table.getColumn("status")}
+              title="Status"
+              options={[
+                {
+                  value: "new",
+                  label: "New",
+                },
+                {
+                  value: "approved",
+                  label: "Approved",
+                },
+                {
+                  value: "to-be-submitted-to-branch-meeting",
+                  label: "Branch Meeting",
+                },
+                {
+                  value: "rejected",
+                  label: "Rejected",
+                },
+                {
+                  value: "completed",
+                  label: "Completed",
+                },
+              ]}
+            />
+          )}
+
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" className="ml-auto">
