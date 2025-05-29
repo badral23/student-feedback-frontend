@@ -12,8 +12,29 @@ export const authConfig = {
       const isOnRegister = nextUrl.pathname.startsWith("/register");
       const isOnLogin = nextUrl.pathname.startsWith("/login");
 
+      const authMenu = {
+        navMain: [
+          {
+            url: "/",
+          },
+          {
+            url: "/feedback",
+          },
+          { url: "/settings" },
+          { url: "/users" },
+        ],
+      };
+
       if (isLoggedIn && (isOnLogin || isOnRegister)) {
         return Response.redirect(new URL("/", nextUrl));
+      }
+
+      if (
+        (!isLoggedIn &&
+          authMenu.navMain.find((e) => e.url === nextUrl.pathname)) ||
+        (!isLoggedIn && nextUrl.pathname === "/")
+      ) {
+        return Response.redirect(new URL("/login", nextUrl));
       }
 
       if (isOnRegister || isOnLogin) {

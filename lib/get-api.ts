@@ -6,7 +6,6 @@ interface Feedback {
   title: string;
   description: string;
   createdAt: string;
-  // Add more fields as per your backend response
 }
 
 export async function getFeedback(): Promise<Feedback[]> {
@@ -35,6 +34,32 @@ export async function getFeedback(): Promise<Feedback[]> {
   return data.data as Feedback[];
 }
 
+export async function getUsers(): Promise<any[]> {
+  const baseUrl = process.env.NEXT_PUBLIC_API_URL;
+  const session = await auth();
+
+  if (!session?.user?.id) {
+    throw new Error("Unauthorized: No user session found.");
+  }
+
+  const response = await fetch(`${baseUrl}/users`, {
+    headers: {
+      Accept: "application/json",
+      Authorization: `Bearer ${session.user.id}`,
+    },
+    next: { tags: ["users"] },
+  });
+
+  if (!response.ok) {
+    throw new Error(
+      `Failed to fetch users: ${response.status} ${response.statusText}`
+    );
+  }
+
+  const data = await response.json();
+  return data;
+}
+
 export async function getStatistics(): Promise<{
   total: number;
   new: number;
@@ -58,7 +83,7 @@ export async function getStatistics(): Promise<{
 
   if (!response.ok) {
     throw new Error(
-      `Failed to fetch feedback: ${response.status} ${response.statusText}`
+      `Failed to fetch statistics: ${response.status} ${response.statusText}`
     );
   }
 

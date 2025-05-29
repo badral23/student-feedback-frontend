@@ -3,7 +3,7 @@ import dayjs from "dayjs";
 import FeedbackReplyForm from "@/components/feedback/FeedbackReply";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
-import { getFeedbackDetail } from "@/lib/get-feedback";
+import { getFeedbackDetail } from "@/lib/get-api";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import ChangeStatusDialog from "@/components/feedback/ChangeStatus";

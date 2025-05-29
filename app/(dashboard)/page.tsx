@@ -1,18 +1,18 @@
-import { DemoChart } from "@/components/feedback/DemoChart";
-import FeedbackListPage from "@/components/feedback/FeedbackList";
+import { ChartAreaInteractive } from "@/components/feedback/DemoChart";
 import { SectionCards } from "@/components/ui/section-card";
-import { getFeedback, getStatistics } from "@/lib/get-feedback";
+import { getStatistics } from "@/lib/get-api";
 
 export default async function Dashboard() {
-  const feedback = await getFeedback();
   const statistics = await getStatistics();
 
   return (
-    <div className="flex flex-1 flex-col">
+    <div className="flex flex-1 flex-col ">
+      <div className="flex items-center justify-between">
+        <h1 className="text-2xl font-bold">Хяналтын самбар</h1>
+      </div>
       <SectionCards statistics={statistics} />
-      <DemoChart />
-      <div className="@container/main flex flex-1 flex-col gap-2">
-        <FeedbackListPage data={feedback} />
+      <div className="pt-6">
+        <ChartAreaInteractive />
       </div>
     </div>
   );

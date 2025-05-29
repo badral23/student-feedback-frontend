@@ -7,9 +7,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { LucideIcon } from "lucide-react";
 import Link from "next/link";
-import StudentFeedbackDialog from "../feedback/FeedbackDialog";
 
 export function NavMain({
   items,
@@ -17,7 +15,7 @@ export function NavMain({
   items: {
     title: string;
     url: string;
-    icon: LucideIcon;
+    icon: any;
     show: boolean;
   }[];
 }) {

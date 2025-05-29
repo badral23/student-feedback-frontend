@@ -22,9 +22,10 @@ export function SiteHeader() {
           orientation="vertical"
           className="mx-2 data-[orientation=vertical]:h-4"
         />
-        <h1 className="text-base font-medium">
+        <h1 className="text-sm font-medium text-foreground/50">
           {user?.role.slice(0, 1).toUpperCase()}
-          {user?.role.slice(1)} Хяналтын самбар
+          {user?.role.slice(1)} |{" "}
+          <span className="text-foreground">{user?.email}</span>
         </h1>
       </div>
     </header>

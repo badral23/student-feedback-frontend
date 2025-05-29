@@ -1,15 +1,7 @@
 "use client";
 
 import * as React from "react";
-import {
-  ArrowUpCircleIcon,
-  ChartBarStacked,
-  Flame,
-  LayoutDashboardIcon,
-  MessageSquareText,
-  UserRoundPen,
-  UsersRound,
-} from "lucide-react";
+import { HelpCircleIcon, SearchIcon, SettingsIcon } from "lucide-react";
 import { NavMain } from "@/components/layout/NavMain";
 import { NavUser } from "@/components/layout/NavUser";
 import {
@@ -18,10 +10,16 @@ import {
   SidebarFooter,
   SidebarHeader,
   SidebarMenu,
-  SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { useSession } from "next-auth/react";
+import { NavSecondary } from "./NavSecondary";
+import {
+  IconDashboard,
+  IconListDetails,
+  IconUsers,
+  IconSchool,
+} from "@tabler/icons-react";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { data: session } = useSession();
@@ -42,88 +40,59 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       {
         title: "Нүүр хуудас",
         url: "/",
-        icon: LayoutDashboardIcon,
+        icon: IconDashboard,
         show: true,
       },
-      // {
-      //   title: "Feedback",
-      //   url: "/feedback",
-      //   icon: MessageSquareText,
-      //   show: true,
-      // },
-      // { title: "Profile", url: "/profile", icon: UserRoundPen, show: true },
       {
-        title: "Departments",
-        url: "/admin/departments",
-        icon: Flame,
-        show: user?.role === "admin",
+        title: "Санал хүсэлт",
+        url: "/feedback",
+        icon: IconListDetails,
+        show: true,
       },
+
       {
-        title: "Users",
-        url: "/admin/users",
-        icon: UsersRound,
+        title: "Хэрэглэгчид",
+        url: "/users",
+        icon: IconUsers,
         show: user?.role === "admin",
       },
     ],
 
-    // navSecondary: [
-    //   {
-    //     title: "Settings",
-    //     url: "#",
-    //     icon: SettingsIcon,
-    //   },
-    //   {
-    //     title: "Get Help",
-    //     url: "#",
-    //     icon: HelpCircleIcon,
-    //   },
-    //   {
-    //     title: "Search",
-    //     url: "#",
-    //     icon: SearchIcon,
-    //   },
-    // ],
-    // documents: [
-    //   {
-    //     name: "Data Library",
-    //     url: "#",
-    //     icon: DatabaseIcon,
-    //   },
-    //   {
-    //     name: "Reports",
-    //     url: "#",
-    //     icon: ClipboardListIcon,
-    //   },
-    //   {
-    //     name: "Word Assistant",
-    //     url: "#",
-    //     icon: FileIcon,
-    //   },
-    // ],
+    navSecondary: [
+      {
+        title: "Settings",
+        url: "/settings",
+        icon: SettingsIcon,
+      },
+      {
+        title: "Get Help",
+        url: "#",
+        icon: HelpCircleIcon,
+      },
+      {
+        title: "Search",
+        url: "/",
+        icon: SearchIcon,
+      },
+    ],
   };
   return (
     <Sidebar collapsible="offcanvas" {...props}>
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton
-              asChild
-              className="data-[slot=sidebar-menu-button]:!p-1.5"
-            >
-              <a href="#">
-                <ArrowUpCircleIcon className="h-5 w-5" />
-                <span className="text-base font-semibold">
-                  Оюутны санал хүсэлт
-                </span>
-              </a>
-            </SidebarMenuButton>
+            <div className="flex items-center gap-2">
+              <IconSchool width={24} height={24} strokeWidth={2} />
+              <span className="text-base font-semibold">
+                Оюутны санал хүсэлт
+              </span>
+            </div>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
-        {/* <NavDocuments items={data.documents} />
-        <NavSecondary items={data.navSecondary} className="mt-auto" /> */}
+        <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={data.user} />
